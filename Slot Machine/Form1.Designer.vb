@@ -23,12 +23,9 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         btn_SpinSlotMachine = New Button()
-        PictureBox1 = New PictureBox()
-        PictureBox2 = New PictureBox()
-        PictureBox3 = New PictureBox()
-        CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
-        CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
-        CType(PictureBox3, ComponentModel.ISupportInitialize).BeginInit()
+        RichTextBox1 = New RichTextBox()
+        RichTextBox2 = New RichTextBox()
+        RichTextBox3 = New RichTextBox()
         SuspendLayout()
         ' 
         ' btn_SpinSlotMachine
@@ -40,49 +37,55 @@ Partial Class Form1
         btn_SpinSlotMachine.Text = "Spin Slot Machine"
         btn_SpinSlotMachine.UseVisualStyleBackColor = True
         ' 
-        ' PictureBox1
+        ' RichTextBox1
         ' 
-        PictureBox1.Location = New Point(751, 190)
-        PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(80, 120)
-        PictureBox1.TabIndex = 4
-        PictureBox1.TabStop = False
+        RichTextBox1.Font = New Font("Times New Roman", 48F)
+        RichTextBox1.Location = New Point(229, 218)
+        RichTextBox1.Name = "RichTextBox1"
+        RichTextBox1.ReadOnly = True
+        RichTextBox1.ScrollBars = RichTextBoxScrollBars.None
+        RichTextBox1.Size = New Size(100, 96)
+        RichTextBox1.TabIndex = 4
+        RichTextBox1.Text = ""
         ' 
-        ' PictureBox2
+        ' RichTextBox2
         ' 
-        PictureBox2.Location = New Point(469, 190)
-        PictureBox2.Name = "PictureBox2"
-        PictureBox2.Size = New Size(80, 120)
-        PictureBox2.TabIndex = 5
-        PictureBox2.TabStop = False
+        RichTextBox2.Font = New Font("Times New Roman", 48F)
+        RichTextBox2.Location = New Point(457, 218)
+        RichTextBox2.Name = "RichTextBox2"
+        RichTextBox2.ReadOnly = True
+        RichTextBox2.ScrollBars = RichTextBoxScrollBars.None
+        RichTextBox2.Size = New Size(100, 96)
+        RichTextBox2.TabIndex = 5
+        RichTextBox2.Text = ""
         ' 
-        ' PictureBox3
+        ' RichTextBox3
         ' 
-        PictureBox3.Location = New Point(183, 190)
-        PictureBox3.Name = "PictureBox3"
-        PictureBox3.Size = New Size(80, 120)
-        PictureBox3.TabIndex = 6
-        PictureBox3.TabStop = False
+        RichTextBox3.Font = New Font("Times New Roman", 48F)
+        RichTextBox3.Location = New Point(685, 218)
+        RichTextBox3.Name = "RichTextBox3"
+        RichTextBox3.ReadOnly = True
+        RichTextBox3.ScrollBars = RichTextBoxScrollBars.None
+        RichTextBox3.Size = New Size(100, 96)
+        RichTextBox3.TabIndex = 6
+        RichTextBox3.Text = ""
         ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1014, 609)
-        Controls.Add(PictureBox3)
-        Controls.Add(PictureBox2)
-        Controls.Add(PictureBox1)
+        Controls.Add(RichTextBox3)
+        Controls.Add(RichTextBox2)
+        Controls.Add(RichTextBox1)
         Controls.Add(btn_SpinSlotMachine)
         Name = "Form1"
         Text = "Form1"
-        CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
-        CType(PictureBox2, ComponentModel.ISupportInitialize).EndInit()
-        CType(PictureBox3, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
     Friend WithEvents btn_SpinSlotMachine As Button
-    Friend WithEvents PictureBox1 As PictureBox
-    Friend WithEvents PictureBox2 As PictureBox
-    Friend WithEvents PictureBox3 As PictureBox
+    Friend WithEvents RichTextBox1 As RichTextBox
+    Friend WithEvents RichTextBox2 As RichTextBox
+    Friend WithEvents RichTextBox3 As RichTextBox
 
 End Class

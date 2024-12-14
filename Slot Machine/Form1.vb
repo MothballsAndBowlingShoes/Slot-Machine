@@ -8,9 +8,9 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Reels = New Reel(2) {
-            New Reel(PictureBox1),
-            New Reel(PictureBox2),
-            New Reel(PictureBox3)
+            New Reel(RichTextBox1),
+            New Reel(RichTextBox2),
+            New Reel(RichTextBox3)
         }
     End Sub
 
@@ -33,6 +33,7 @@ Public Class Form1
             Case 3
                 TimesButtonPressed += 1
                 Reels(2).IsReelAnimated = False
+
             Case Else
                 Dim ResultsForm As Form = New WinForm()
                 ResultsForm.Show()
@@ -80,35 +81,35 @@ Class Reel
     Const DivisionValue As Integer = 64 ' The Divisional Value for the RNG to divide by using Modulas.
 
     Dim Symbols = New Symbol(21) {
-        New Symbol({0, 0, 25}, "nine"),
-        New Symbol({0, 0, 25}, "nine"),
-        New Symbol({0, 25, 100}, "ten"),
-        New Symbol({0, 25, 100}, "ten"),
-        New Symbol({0, 25, 100}, "ten"),
-        New Symbol({0, 25, 100}, "ten"),
-        New Symbol({0, 25, 100}, "ten"),
-        New Symbol({0, 50, 100}, "jack"),
-        New Symbol({0, 50, 100}, "jack"),
-        New Symbol({0, 50, 125}, "queen"),
-        New Symbol({0, 50, 125}, "queen"),
-        New Symbol({0, 50, 250}, "king"),
-        New Symbol({0, 75, 250}, "ace"),
-        New Symbol({0, 75, 250}, "cherry"),
-        New Symbol({0, 75, 250}, "cherry"),
-        New Symbol({0, 75, 250}, "cherry"),
-        New Symbol({0, 50, 400}, "lemon"),
-        New Symbol({0, 50, 400}, "lemon"),
-        New Symbol({0, 100, 400}, "watermelon"),
-        New Symbol({0, 100, 400}, "watermelon"),
-        New Symbol({0, 100, 750}, "bell"),
-        New Symbol({0, 2000, 9000}, "moneyBag")
+        New Symbol({0, 0, 25}, "🂪"),
+        New Symbol({0, 0, 25}, "🂪"),
+        New Symbol({0, 25, 100}, "🂪"),
+        New Symbol({0, 25, 100}, "🂪"),
+        New Symbol({0, 25, 100}, "🂪"),
+        New Symbol({0, 25, 100}, "🂪"),
+        New Symbol({0, 25, 100}, "🂪"),
+        New Symbol({0, 50, 100}, "🂪"),
+        New Symbol({0, 50, 100}, "🂪"),
+        New Symbol({0, 50, 125}, "🂪"),
+        New Symbol({0, 50, 125}, "🂪"),
+        New Symbol({0, 50, 250}, "🂪"),
+        New Symbol({0, 75, 250}, "🂡"),
+        New Symbol({0, 75, 250}, "🌸"),
+        New Symbol({0, 75, 250}, "🌸"),
+        New Symbol({0, 75, 250}, "🌸"),
+        New Symbol({0, 50, 400}, "🍋"),
+        New Symbol({0, 50, 400}, "🍋"),
+        New Symbol({0, 100, 400}, "🍉"),
+        New Symbol({0, 100, 400}, "🍉"),
+        New Symbol({0, 100, 750}, "⍾"),
+        New Symbol({0, 2000, 9000}, "💰")
     }
 
     Public SelectedSymbol As Symbol
 
     Private Seed As Integer             ' The Seed that is used to generate the number.
 
-    Private picture As PictureBox          ' The Textbox that it writes too.
+    Private Textbox As RichTextBox          ' The Textbox that it writes too.
 
     Public IsReelAnimated As Boolean    ' Checks if the Reel is Currently Animated.
 
@@ -117,8 +118,9 @@ Class Reel
     ''' Upon construction it Randomizes the Rnd() function and Generates the Seed.
     ''' </summary>
     ''' <param name="Picture"></param>
-    Public Sub New(Picture As PictureBox)
-        Me.picture = Picture
+    Public Sub New(Textbox As RichTextBox)
+        Me.Textbox = Textbox
+        Textbox.SelectionAlignment = HorizontalAlignment.Center
     End Sub
 
     ''' <summary>
@@ -228,8 +230,8 @@ Class Reel
         Do Until IsReelAnimated = False
             Dim randomSymbol = CovnvertDigitalReelToPhysical(Int((Upperbound * Rnd()) + Lowerbound) Mod DivisionValue)
 
-            picture.Invoke(Sub()
-                               picture.Image = randomSymbol.Symbol
+            TextBox.Invoke(Sub()
+                               Textbox.Text = randomSymbol.Name
                            End Sub)
 
             Thread.Sleep(10)
@@ -237,16 +239,16 @@ Class Reel
 
         For speedShift As Integer = 10 To 100 Step 5
             Dim randomSymbol = CovnvertDigitalReelToPhysical(Int((Upperbound * Rnd()) + Lowerbound) Mod DivisionValue)
-            picture.Invoke(Sub()
-                               picture.Image = randomSymbol.Symbol
+            Textbox.Invoke(Sub()
+                               Textbox.Text = randomSymbol.Name
                            End Sub)
 
             Thread.Sleep(speedShift)
         Next
 
         SelectedSymbol = CovnvertDigitalReelToPhysical(CalculateDigitalReel())
-        picture.Invoke(Sub()
-                           picture.Image = SelectedSymbol.Symbol
+        Textbox.Invoke(Sub()
+                           Textbox.Text = SelectedSymbol.Name
                        End Sub)
 
     End Sub
@@ -256,6 +258,7 @@ Public Class Symbol
     Public WinningSymbolNumbers As Integer()
     Public Symbol As Image
     Public Name As String
+
     Public Sub New(WinningSymbol As Integer(), Name As String)
         Me.WinningSymbolNumbers = WinningSymbol
         Me.Name = Name
