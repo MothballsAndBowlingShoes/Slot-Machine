@@ -2,7 +2,7 @@
 Imports System.Windows.Forms.VisualStyles
 
 Public Class Form1
-    Const intMAXREELS As Integer = 2
+    Dim MaxReels As Integer
     Dim TimesButtonPressed As Integer = 0
     Dim Reels As List(Of Reel)
 
@@ -12,6 +12,8 @@ Public Class Form1
             New Reel(RichTextBox2),
             New Reel(RichTextBox3)
         }
+
+        MaxReels = Reels.Count
     End Sub
 
     Private Async Sub btn_SpinSlotMachine_Click(sender As Object, e As EventArgs) Handles btn_SpinSlotMachine.Click
@@ -19,7 +21,7 @@ Public Class Form1
             Case 0
                 ' Start animating all reels asynchronously
                 Dim reelTasks As New List(Of Task)
-                For index As Integer = 0 To intMAXREELS
+                For index As Integer = 0 To MaxReels - 1
                     reelTasks.Add(Reels(index).ReelAnimator())
                 Next
                 TimesButtonPressed += 1
@@ -27,7 +29,7 @@ Public Class Form1
                 ' Await all reels to complete their animation
                 Await Task.WhenAll(reelTasks)
 
-            Case 0 To intMAXREELS + 1
+            Case 0 To MaxReels
                 ' Stop animation for the next reel
                 Reels(TimesButtonPressed - 1).IsReelAnimated = False
                 TimesButtonPressed += 1
