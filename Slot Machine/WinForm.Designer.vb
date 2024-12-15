@@ -60,7 +60,7 @@ Partial Class WinForm
         Controls.Add(lbl_ResultText)
         Controls.Add(pctBx_ImageOverlay)
         Name = "WinForm"
-        Text = "Form2"
+        Text = "Results Form"
         CType(pctBx_ImageOverlay, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub

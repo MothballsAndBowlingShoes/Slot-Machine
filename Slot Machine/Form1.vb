@@ -4,8 +4,10 @@ Imports System.Windows.Forms.VisualStyles
 Public Class Form1
     ' The maximum number of reels in the slot machine.
     Dim MaxReels As Integer
+
     ' The number of times the spin button has been pressed.
     Dim TimesButtonPressed As Integer = 0
+
     ' A list of reels for the slot machine.
     Dim Reels As List(Of Reel)
 
@@ -56,7 +58,7 @@ Public Class Form1
                 Reels(TimesButtonPressed - 1).IsReelAnimated = False
                 TimesButtonPressed += 1
 
-                ' Show the results form and reset the game when the button is pressed again.
+                ' Show results form and reset the game when the button is pressed again.
             Case Else
                 ' Show results in a new form and reset the button text.
                 Dim ResultsForm As New WinForm()
@@ -90,6 +92,7 @@ Public Class Form1
     End Function
 
 End Class
+
 
 
 ''' <summary>

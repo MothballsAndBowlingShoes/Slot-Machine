@@ -91,7 +91,7 @@ Partial Class Form1
         Controls.Add(btn_SpinSlotMachine)
         Controls.Add(GroupBox1)
         Name = "Form1"
-        Text = "Form1"
+        Text = "Slot Machine!"
         ResumeLayout(False)
     End Sub
     Friend WithEvents btn_SpinSlotMachine As Button
