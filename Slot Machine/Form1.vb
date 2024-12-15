@@ -3,7 +3,7 @@ Imports System.Windows.Forms.VisualStyles
 
 Public Class Form1
     Const intMAXREELS As Integer = 2
-
+    Dim TimesButtonPressed As Integer = 0
     Dim Reels As Reel()
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -15,8 +15,6 @@ Public Class Form1
     End Sub
 
     Private Async Sub btn_SpinSlotMachine_Click(sender As Object, e As EventArgs) Handles btn_SpinSlotMachine.Click
-        Dim TimesButtonPressed As Integer = 0
-
         Select Case TimesButtonPressed
             Case 0
                 ' Start animating all reels asynchronously
@@ -270,4 +268,3 @@ Public Class ReelSymbol
         Me.Name = Name
     End Sub
 End Class
-
