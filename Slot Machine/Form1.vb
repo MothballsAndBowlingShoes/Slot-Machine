@@ -74,30 +74,7 @@ Class Reel
     Const intNUMBEROFSYMBOLS As Integer = 21 ' The number of different symbols in the reel.
 
     ' An array of ReelSymbol objects representing the symbols in the reel.
-    Dim ReelSymbolList = New ReelSymbol(intNUMBEROFSYMBOLS) {
-        New ReelSymbol({0, 0, 25}, "🂪"),
-        New ReelSymbol({0, 0, 25}, "🂪"),
-        New ReelSymbol({0, 25, 100}, "🂪"),
-        New ReelSymbol({0, 25, 100}, "🂪"),
-        New ReelSymbol({0, 25, 100}, "🂪"),
-        New ReelSymbol({0, 25, 100}, "🂪"),
-        New ReelSymbol({0, 25, 100}, "🂪"),
-        New ReelSymbol({0, 50, 100}, "🂪"),
-        New ReelSymbol({0, 50, 100}, "🂪"),
-        New ReelSymbol({0, 50, 125}, "🂪"),
-        New ReelSymbol({0, 50, 125}, "🂪"),
-        New ReelSymbol({0, 50, 250}, "🂪"),
-        New ReelSymbol({0, 75, 250}, "🂡"),
-        New ReelSymbol({0, 75, 250}, "🌸"),
-        New ReelSymbol({0, 75, 250}, "🌸"),
-        New ReelSymbol({0, 75, 250}, "🌸"),
-        New ReelSymbol({0, 50, 400}, "🍋"),
-        New ReelSymbol({0, 50, 400}, "🍋"),
-        New ReelSymbol({0, 100, 400}, "🍉"),
-        New ReelSymbol({0, 100, 400}, "🍉"),
-        New ReelSymbol({0, 100, 750}, "⍾"),
-        New ReelSymbol({0, 2000, 9000}, "💰")
-    }
+    Dim ReelSymbolList As List(Of ReelSymbol) = ReelSymbolFactory.CreateSymbols()
 
     Public SelectedSymbol As ReelSymbol ' Selected symbol after animation.
 
@@ -121,8 +98,8 @@ Class Reel
     ''' </summary>
     ''' <returns>Modular value of the generated random number.</returns>
     Private Function CalculateDigitalReel() As Integer
-        Randomize() ' Seed the random number generator.
-        Seed = Int((intUPPERBOUND * Rnd()) + intLOWERBOUND) ' Generate random number between LOWERBOUND and UPPERBOUND.
+        Dim RandomNumber = New Random() ' Seed the random number generator.
+        Seed = RandomNumber.Next(intLOWERBOUND, intUPPERBOUND) ' Generate random number between LOWERBOUND and UPPERBOUND.
 
         Return Seed Mod intDIVISONVALUE ' Return modulus with DIVISONVALUE to limit the range.
     End Function
@@ -206,27 +183,32 @@ Class Reel
     ''' Continuously updates the Textbox with new symbols in a loop.
     ''' </summary>
     Private Async Sub StartAnimationLoop()
-        IsReelAnimated = True ' Set reel as animated.
+        IsReelAnimated = True
         Dim randomGenerator As New Random()
 
-        While IsReelAnimated ' Keep animating until IsReelAnimated is False.
-            ' Update the Textbox with a random symbol.
-            UpdateTextbox(ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE).Name)
-            Await Task.Delay(10) ' Delay between updates.
+        While IsReelAnimated
+            Dim randomSymbol = ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE)
+            SelectedSymbol = randomSymbol ' Update SelectedSymbol
+            UpdateTextbox(randomSymbol.Name) ' Update the textbox
+            Await Task.Delay(10)
         End While
     End Sub
+
 
     ''' <summary>
     ''' Gradually slows down the animation by increasing the delay between updates.
     ''' </summary>
     Private Async Function GraduallySlowAnimation() As Task
+        Dim randomGenerator As New Random()
+
         For delay As Integer = 10 To 100 Step 5 ' Gradually increase delay from 10 to 100 ms.
-            Dim randomGenerator As New Random()
-            ' Update the Textbox with a random symbol at each step.
-            UpdateTextbox(ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE).Name)
-            Await Task.Delay(delay) ' Wait before next update.
+            Dim randomSymbol = ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE)
+            SelectedSymbol = randomSymbol ' Update the SelectedSymbol to match the displayed symbol
+            UpdateTextbox(randomSymbol.Name) ' Update the Textbox with the same symbol
+            Await Task.Delay(delay) ' Wait for the increasing delay time before updating again
         Next
     End Function
+
 
     ''' <summary>
     ''' Stops the reel on the final symbol and updates the Textbox.
