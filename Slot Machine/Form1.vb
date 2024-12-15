@@ -268,3 +268,33 @@ Public Class ReelSymbol
         Me.Name = Name
     End Sub
 End Class
+
+Public Class ReelSymbolFactory
+    Public Shared Function CreateSymbols() As List(Of ReelSymbol)
+        Return New List(Of ReelSymbol) From {
+            New ReelSymbol({0, 0, 25}, "🂪"),
+            New ReelSymbol({0, 0, 25}, "🂪"),
+            New ReelSymbol({0, 0, 25}, "🂩"),
+            New ReelSymbol({0, 25, 100}, "🂪"),
+            New ReelSymbol({0, 25, 100}, "🂪"),
+            New ReelSymbol({0, 25, 100}, "🂪"),
+            New ReelSymbol({0, 50, 100}, "🂫"),
+            New ReelSymbol({0, 50, 100}, "🂫"),
+            New ReelSymbol({0, 50, 100}, "🂫"),
+            New ReelSymbol({0, 50, 125}, "🂭"),
+            New ReelSymbol({0, 50, 125}, "🂭"),
+            New ReelSymbol({0, 50, 250}, "🂮"),
+            New ReelSymbol({0, 75, 250}, "🂡"),
+            New ReelSymbol({0, 75, 250}, "🌸"),
+            New ReelSymbol({0, 75, 250}, "🌸"),
+            New ReelSymbol({0, 75, 250}, "🌸"),
+            New ReelSymbol({0, 50, 400}, "🍋"),
+            New ReelSymbol({0, 50, 400}, "🍋"),
+            New ReelSymbol({0, 50, 400}, "🍋"),
+            New ReelSymbol({0, 100, 400}, "🍉"),
+            New ReelSymbol({0, 100, 750}, "⍾"),
+            New ReelSymbol({0, 2000, 9000}, "💰")
+        }
+    End Function
+
+End Class
