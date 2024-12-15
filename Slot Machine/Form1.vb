@@ -255,8 +255,8 @@ End Class
 Public Class ReelSymbolFactory
     Public Shared Function CreateSymbols() As List(Of ReelSymbol)
         Return New List(Of ReelSymbol) From {
-            New ReelSymbol({0, 0, 25}, "🂪"),
-            New ReelSymbol({0, 0, 25}, "🂪"),
+            New ReelSymbol({0, 0, 25}, "🂩"),
+            New ReelSymbol({0, 0, 25}, "🂩"),
             New ReelSymbol({0, 0, 25}, "🂩"),
             New ReelSymbol({0, 25, 100}, "🂪"),
             New ReelSymbol({0, 25, 100}, "🂪"),
