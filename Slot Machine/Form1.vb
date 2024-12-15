@@ -99,7 +99,6 @@ End Class
 ''' The reel class makes up a single reel in the slot machine.
 ''' There are 3 reels in the slot machine.
 ''' </summary>
-' Class Reel represents the functionality of a digital slot machine reel.
 Class Reel
     ' Constants defining the upper and lower bounds for RNG (Random Number Generator) and other values.
     Const intUPPERBOUND As Integer = 999   ' The Upperbound for the RNG.
