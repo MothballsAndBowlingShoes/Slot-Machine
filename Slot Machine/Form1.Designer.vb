@@ -26,6 +26,7 @@ Partial Class Form1
         RichTextBox1 = New RichTextBox()
         RichTextBox2 = New RichTextBox()
         RichTextBox3 = New RichTextBox()
+        GroupBox1 = New GroupBox()
         SuspendLayout()
         ' 
         ' btn_SpinSlotMachine
@@ -70,6 +71,15 @@ Partial Class Form1
         RichTextBox3.TabIndex = 6
         RichTextBox3.Text = ""
         ' 
+        ' GroupBox1
+        ' 
+        GroupBox1.Location = New Point(185, 168)
+        GroupBox1.Name = "GroupBox1"
+        GroupBox1.Size = New Size(644, 206)
+        GroupBox1.TabIndex = 7
+        GroupBox1.TabStop = False
+        GroupBox1.Text = "Slot Machine Reels"
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -79,6 +89,7 @@ Partial Class Form1
         Controls.Add(RichTextBox2)
         Controls.Add(RichTextBox1)
         Controls.Add(btn_SpinSlotMachine)
+        Controls.Add(GroupBox1)
         Name = "Form1"
         Text = "Form1"
         ResumeLayout(False)
@@ -87,5 +98,6 @@ Partial Class Form1
     Friend WithEvents RichTextBox1 As RichTextBox
     Friend WithEvents RichTextBox2 As RichTextBox
     Friend WithEvents RichTextBox3 As RichTextBox
+    Friend WithEvents GroupBox1 As GroupBox
 
 End Class

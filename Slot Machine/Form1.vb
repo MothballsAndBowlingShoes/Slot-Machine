@@ -2,53 +2,81 @@
 Imports System.Windows.Forms.VisualStyles
 
 Public Class Form1
+    ' The maximum number of reels in the slot machine.
     Dim MaxReels As Integer
+    ' The number of times the spin button has been pressed.
     Dim TimesButtonPressed As Integer = 0
+    ' A list of reels for the slot machine.
     Dim Reels As List(Of Reel)
 
+    ''' <summary>
+    ''' Initializes the form and sets up the reels.
+    ''' </summary>
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Initialize the reels with corresponding RichTextBox controls.
         Reels = New List(Of Reel) From {
             New Reel(RichTextBox1),
             New Reel(RichTextBox2),
             New Reel(RichTextBox3)
         }
 
+        ' Set the maximum number of reels.
         MaxReels = Reels.Count
     End Sub
 
+    ''' <summary>
+    ''' Handles the button click event to start or stop the slot machine reels' animation.
+    ''' </summary>
+    ''' <param name="sender">The sender object.</param>
+    ''' <param name="e">The event arguments.</param>
     Private Async Sub btn_SpinSlotMachine_Click(sender As Object, e As EventArgs) Handles btn_SpinSlotMachine.Click
         Select Case TimesButtonPressed
+            ' Start the animation of all reels asynchronously when the button is first pressed.
             Case 0
-                ' Start animating all reels asynchronously
+                btn_SpinSlotMachine.Text = "Stop Reel " + (TimesButtonPressed + 1).ToString
+                ' Start animating all reels asynchronously.
                 Dim reelTasks As New List(Of Task)
                 For index As Integer = 0 To MaxReels - 1
                     reelTasks.Add(Reels(index).ReelAnimator())
                 Next
                 TimesButtonPressed += 1
 
-                ' Await all reels to complete their animation
+                ' Await all reels to complete their animation.
                 Await Task.WhenAll(reelTasks)
 
+            ' Stop animation for each reel on subsequent presses.
             Case 0 To MaxReels
-                ' Stop animation for the next reel
+                If TimesButtonPressed < 3 Then
+                    btn_SpinSlotMachine.Text = "Stop Reel " + (TimesButtonPressed + 1).ToString
+                Else
+                    btn_SpinSlotMachine.Text = "See Results"
+                End If
+
+                ' Stop animation for the next reel.
                 Reels(TimesButtonPressed - 1).IsReelAnimated = False
                 TimesButtonPressed += 1
 
+                ' Show the results form and reset the game when the button is pressed again.
             Case Else
-                ' Show results form and reset
+                ' Show results in a new form and reset the button text.
                 Dim ResultsForm As New WinForm()
                 ResultsForm.Show()
                 TimesButtonPressed = 0
+                btn_SpinSlotMachine.Text = "Start A New Game"
         End Select
     End Sub
 
-
+    ''' <summary>
+    ''' Determines the prize based on the symbols selected on the reels.
+    ''' </summary>
+    ''' <returns>The prize amount based on matching symbols.</returns>
     Public Function GetWinPrize() As Integer
+        ' Get the selected symbols from each reel.
         Dim FirstReelSymbol As ReelSymbol = Reels(0).SelectedSymbol
         Dim SecondReelSymbol As ReelSymbol = Reels(1).SelectedSymbol
         Dim ThirdReelSymbol As ReelSymbol = Reels(2).SelectedSymbol
 
-        ' Check for matching symbols
+        ' Check for matching symbols and return the corresponding prize.
         If FirstReelSymbol.Name = SecondReelSymbol.Name AndAlso FirstReelSymbol.Name = ThirdReelSymbol.Name Then
             Return FirstReelSymbol.WinningSymbolNumbers(2)
         ElseIf FirstReelSymbol.Name = SecondReelSymbol.Name OrElse FirstReelSymbol.Name = ThirdReelSymbol.Name Then
@@ -57,11 +85,12 @@ Public Class Form1
             Return SecondReelSymbol.WinningSymbolNumbers(1)
         End If
 
-        ' Default case
+        ' Default case: no match, return 0 prize.
         Return 0
     End Function
 
 End Class
+
 
 ''' <summary>
 ''' The reel class makes up a single reel in the slot machine.
