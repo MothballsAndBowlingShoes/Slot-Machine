@@ -2,73 +2,65 @@
 Imports System.Windows.Forms.VisualStyles
 
 Public Class Form1
-    Dim TimesButtonPressed As Integer = 0
+    Const intMAXREELS As Integer = 2
 
     Dim Reels As Reel()
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Reels = New Reel(2) {
+        Reels = New Reel(intMAXREELS) {
             New Reel(RichTextBox1),
             New Reel(RichTextBox2),
             New Reel(RichTextBox3)
         }
     End Sub
 
-    Private Sub btn_SpinSlotMachine_Click(sender As Object, e As EventArgs) Handles btn_SpinSlotMachine.Click
+    Private Async Sub btn_SpinSlotMachine_Click(sender As Object, e As EventArgs) Handles btn_SpinSlotMachine.Click
+        Dim TimesButtonPressed As Integer = 0
+
         Select Case TimesButtonPressed
             Case 0
-                For index As Integer = 0 To 2
-                    Reels(index).ReelAnimator()
+                ' Start animating all reels asynchronously
+                Dim reelTasks As New List(Of Task)
+                For index As Integer = 0 To intMAXREELS
+                    reelTasks.Add(Reels(index).ReelAnimator())
                 Next
                 TimesButtonPressed += 1
 
-            Case 1
-                TimesButtonPressed += 1
-                Reels(0).IsReelAnimated = False
+                ' Await all reels to complete their animation
+                Await Task.WhenAll(reelTasks)
 
-            Case 2
+            Case 0 To intMAXREELS + 1
+                ' Stop animation for the next reel
+                Reels(TimesButtonPressed - 1).IsReelAnimated = False
                 TimesButtonPressed += 1
-                Reels(1).IsReelAnimated = False
-
-            Case 3
-                TimesButtonPressed += 1
-                Reels(2).IsReelAnimated = False
 
             Case Else
-                Dim ResultsForm As Form = New WinForm()
+                ' Show results form and reset
+                Dim ResultsForm As New WinForm()
                 ResultsForm.Show()
                 TimesButtonPressed = 0
         End Select
     End Sub
 
+
     Public Function GetWinPrize() As Integer
-        Dim FirstReelSymbol As Symbol = Reels(0).SelectedSymbol
-        Dim NumberOfMatches As Integer = 0
-        Dim MatchingSymbols As Symbol
-        If FirstReelSymbol.Name = Reels(1).SelectedSymbol.Name And FirstReelSymbol.Name = Reels(2).SelectedSymbol.Name Then
-            NumberOfMatches += 2
-            MatchingSymbols = FirstReelSymbol
-            Return MatchingSymbols.WinningSymbolNumbers(NumberOfMatches)
+        Dim FirstReelSymbol As ReelSymbol = Reels(0).SelectedSymbol
+        Dim SecondReelSymbol As ReelSymbol = Reels(1).SelectedSymbol
+        Dim ThirdReelSymbol As ReelSymbol = Reels(2).SelectedSymbol
 
-        ElseIf FirstReelSymbol.Name = Reels(1).SelectedSymbol.Name Then
-            NumberOfMatches += 1
-            MatchingSymbols = FirstReelSymbol
-            Return MatchingSymbols.WinningSymbolNumbers(NumberOfMatches)
-
-        ElseIf FirstReelSymbol.Name = Reels(2).SelectedSymbol.Name Then
-            NumberOfMatches += 1
-            MatchingSymbols = FirstReelSymbol
-            Return MatchingSymbols.WinningSymbolNumbers(NumberOfMatches)
-
-        ElseIf Reels(1).SelectedSymbol.Name = Reels(2).SelectedSymbol.Name Then
-            NumberOfMatches += 1
-            MatchingSymbols = Reels(1).SelectedSymbol
-            Return MatchingSymbols.WinningSymbolNumbers(NumberOfMatches)
-
+        ' Check for matching symbols
+        If FirstReelSymbol.Name = SecondReelSymbol.Name AndAlso FirstReelSymbol.Name = ThirdReelSymbol.Name Then
+            Return FirstReelSymbol.WinningSymbolNumbers(2)
+        ElseIf FirstReelSymbol.Name = SecondReelSymbol.Name OrElse FirstReelSymbol.Name = ThirdReelSymbol.Name Then
+            Return FirstReelSymbol.WinningSymbolNumbers(1)
+        ElseIf SecondReelSymbol.Name = ThirdReelSymbol.Name Then
+            Return SecondReelSymbol.WinningSymbolNumbers(1)
         End If
 
+        ' Default case
         Return 0
     End Function
+
 End Class
 
 ''' <summary>
@@ -76,36 +68,37 @@ End Class
 ''' There are 3 reels in the slot machine.
 ''' </summary>
 Class Reel
-    Const Upperbound As Integer = 999   ' The Upperbound for the RNG.
-    Const Lowerbound As Integer = 1     ' The Lowerbound for the RNG.
-    Const DivisionValue As Integer = 64 ' The Divisional Value for the RNG to divide by using Modulas.
+    Const intUPPERBOUND As Integer = 999   ' The Upperbound for the RNG.
+    Const intLOWERBOUND As Integer = 1     ' The Lowerbound for the RNG.
+    Const intDIVISONVALUE As Integer = 64 ' The Divisional Value for the RNG to divide by using Modulas.
+    Const intNUMBEROFSYMBOLS As Integer = 21
 
-    Dim Symbols = New Symbol(21) {
-        New Symbol({0, 0, 25}, "🂪"),
-        New Symbol({0, 0, 25}, "🂪"),
-        New Symbol({0, 25, 100}, "🂪"),
-        New Symbol({0, 25, 100}, "🂪"),
-        New Symbol({0, 25, 100}, "🂪"),
-        New Symbol({0, 25, 100}, "🂪"),
-        New Symbol({0, 25, 100}, "🂪"),
-        New Symbol({0, 50, 100}, "🂪"),
-        New Symbol({0, 50, 100}, "🂪"),
-        New Symbol({0, 50, 125}, "🂪"),
-        New Symbol({0, 50, 125}, "🂪"),
-        New Symbol({0, 50, 250}, "🂪"),
-        New Symbol({0, 75, 250}, "🂡"),
-        New Symbol({0, 75, 250}, "🌸"),
-        New Symbol({0, 75, 250}, "🌸"),
-        New Symbol({0, 75, 250}, "🌸"),
-        New Symbol({0, 50, 400}, "🍋"),
-        New Symbol({0, 50, 400}, "🍋"),
-        New Symbol({0, 100, 400}, "🍉"),
-        New Symbol({0, 100, 400}, "🍉"),
-        New Symbol({0, 100, 750}, "⍾"),
-        New Symbol({0, 2000, 9000}, "💰")
+    Dim ReelSymbolList = New ReelSymbol(intNUMBEROFSYMBOLS) {
+        New ReelSymbol({0, 0, 25}, "🂪"),
+        New ReelSymbol({0, 0, 25}, "🂪"),
+        New ReelSymbol({0, 25, 100}, "🂪"),
+        New ReelSymbol({0, 25, 100}, "🂪"),
+        New ReelSymbol({0, 25, 100}, "🂪"),
+        New ReelSymbol({0, 25, 100}, "🂪"),
+        New ReelSymbol({0, 25, 100}, "🂪"),
+        New ReelSymbol({0, 50, 100}, "🂪"),
+        New ReelSymbol({0, 50, 100}, "🂪"),
+        New ReelSymbol({0, 50, 125}, "🂪"),
+        New ReelSymbol({0, 50, 125}, "🂪"),
+        New ReelSymbol({0, 50, 250}, "🂪"),
+        New ReelSymbol({0, 75, 250}, "🂡"),
+        New ReelSymbol({0, 75, 250}, "🌸"),
+        New ReelSymbol({0, 75, 250}, "🌸"),
+        New ReelSymbol({0, 75, 250}, "🌸"),
+        New ReelSymbol({0, 50, 400}, "🍋"),
+        New ReelSymbol({0, 50, 400}, "🍋"),
+        New ReelSymbol({0, 100, 400}, "🍉"),
+        New ReelSymbol({0, 100, 400}, "🍉"),
+        New ReelSymbol({0, 100, 750}, "⍾"),
+        New ReelSymbol({0, 2000, 9000}, "💰")
     }
 
-    Public SelectedSymbol As Symbol
+    Public SelectedSymbol As ReelSymbol
 
     Private Seed As Integer             ' The Seed that is used to generate the number.
 
@@ -129,9 +122,9 @@ Class Reel
     ''' <returns></returns>
     Private Function CalculateDigitalReel()
         Randomize()
-        Seed = Int((Upperbound * Rnd()) + Lowerbound)
+        Seed = Int((intUPPERBOUND * Rnd()) + intLOWERBOUND)
 
-        Return Seed Mod DivisionValue
+        Return Seed Mod intDIVISONVALUE
     End Function
 
     ''' <summary>
@@ -139,73 +132,73 @@ Class Reel
     ''' </summary>
     ''' <param name="DigitalReel"></param>
     ''' <returns></returns>
-    Private Function CovnvertDigitalReelToPhysical(DigitalReel As Integer) As Symbol
+    Private Function ConvertDigitalReelToPhysical(DigitalReel As Integer) As ReelSymbol
         Select Case DigitalReel
             Case 5, 27, 51, 41
-                Return Symbols(0)
+                Return ReelSymbolList(0)
 
             Case 13, 35, 63, 37
-                Return Symbols(1)
+                Return ReelSymbolList(1)
 
             Case 16, 32, 49
-                Return Symbols(2)
+                Return ReelSymbolList(2)
 
             Case 7, 14, 42
-                Return Symbols(3)
+                Return ReelSymbolList(3)
 
             Case 9, 21, 56
-                Return Symbols(4)
+                Return ReelSymbolList(4)
 
             Case 11, 29, 60
-                Return Symbols(5)
+                Return ReelSymbolList(5)
 
             Case 2, 10, 38
-                Return Symbols(6)
+                Return ReelSymbolList(6)
 
             Case 0, 18, 45
-                Return Symbols(7)
+                Return ReelSymbolList(7)
 
             Case 3, 24, 54
-                Return Symbols(8)
+                Return ReelSymbolList(8)
 
             Case 6, 30, 57
-                Return Symbols(9)
+                Return ReelSymbolList(9)
 
             Case 1, 19, 46
-                Return Symbols(10)
+                Return ReelSymbolList(10)
 
             Case 4, 25, 52
-                Return Symbols(11)
+                Return ReelSymbolList(11)
 
             Case 8, 22, 48
-                Return Symbols(12)
+                Return ReelSymbolList(12)
 
             Case 12, 33, 59
-                Return Symbols(13)
+                Return ReelSymbolList(13)
 
             Case 15, 36, 62
-                Return Symbols(14)
+                Return ReelSymbolList(14)
 
             Case 17, 39, 64
-                Return Symbols(15)
+                Return ReelSymbolList(15)
 
             Case 20, 43, 44
-                Return Symbols(16)
+                Return ReelSymbolList(16)
 
             Case 23, 47, 58
-                Return Symbols(17)
+                Return ReelSymbolList(17)
 
             Case 26, 50, 40
-                Return Symbols(18)
+                Return ReelSymbolList(18)
 
             Case 28, 53, 61
-                Return Symbols(19)
+                Return ReelSymbolList(19)
 
             Case 31, 55
-                Return Symbols(20)
+                Return ReelSymbolList(20)
 
             Case 34
-                Return Symbols(21)
+                Return ReelSymbolList(21)
         End Select
 
         Return Nothing
@@ -214,47 +207,55 @@ Class Reel
     ''' <summary>
     ''' It creates a background thread to handle animation.
     ''' </summary>
-    Public Sub ReelAnimator()
-        Dim AnimationThread As New Thread(AddressOf StartAnimation)
-        AnimationThread.Start()
+    Public Function ReelAnimator() As Task
+        Return AnimateReel()
+    End Function
+
+    Private Async Function AnimateReel() As Task
+        StartAnimationLoop()
+
+        Await GraduallySlowAnimation()
+
+        StopReelOnFinalSymbol()
+    End Function
+
+    Private Async Sub StartAnimationLoop()
+        IsReelAnimated = True
+        Dim randomGenerator As New Random()
+
+        While IsReelAnimated
+            UpdateTextbox(ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE).Name)
+            Await Task.Delay(10) ' Use Await here instead of Wait
+        End While
     End Sub
 
-    ''' <summary>
-    ''' Starts the animation, and keeps it running until IsReelAnimated is false. 
-    ''' Every loop generates a random number and writes it too the Textbox.
-    ''' After IsReelAnimated = False it slows it down with a for loop.
-    ''' </summary>
-    Private Sub StartAnimation()
-        IsReelAnimated = True
 
-        Do Until IsReelAnimated = False
-            Dim randomSymbol = CovnvertDigitalReelToPhysical(Int((Upperbound * Rnd()) + Lowerbound) Mod DivisionValue)
-
-            TextBox.Invoke(Sub()
-                               Textbox.Text = randomSymbol.Name
-                           End Sub)
-
-            Thread.Sleep(10)
-        Loop
-
-        For speedShift As Integer = 10 To 100 Step 5
-            Dim randomSymbol = CovnvertDigitalReelToPhysical(Int((Upperbound * Rnd()) + Lowerbound) Mod DivisionValue)
-            Textbox.Invoke(Sub()
-                               Textbox.Text = randomSymbol.Name
-                           End Sub)
-
-            Thread.Sleep(speedShift)
+    Private Async Function GraduallySlowAnimation() As Task
+        For delay As Integer = 10 To 100 Step 5
+            Dim randomGenerator As New Random()
+            UpdateTextbox(ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE).Name)
+            Await Task.Delay(delay)
         Next
+    End Function
 
-        SelectedSymbol = CovnvertDigitalReelToPhysical(CalculateDigitalReel())
+    Private Shared reelLock As New Object()
+
+    Private Sub StopReelOnFinalSymbol()
+        SyncLock reelLock
+            Dim finalSymbol = ConvertDigitalReelToPhysical(CalculateDigitalReel())
+            SelectedSymbol = finalSymbol
+            UpdateTextbox(finalSymbol.Name)
+        End SyncLock
+    End Sub
+
+    Private Sub UpdateTextbox(text As String)
         Textbox.Invoke(Sub()
-                           Textbox.Text = SelectedSymbol.Name
+                           Textbox.Text = text
                        End Sub)
-
     End Sub
 End Class
 
-Public Class Symbol
+Public Class ReelSymbol
     Public WinningSymbolNumbers As Integer()
     Public Symbol As Image
     Public Name As String
