@@ -255,7 +255,6 @@ End Class
 ' Class ReelSymbol represents a single symbol on the reel.
 Public Class ReelSymbol
     Public WinningSymbolNumbers As Integer() ' The numbers associated with winning symbols.
-    Public Symbol As Image ' The symbol's image.
     Public Name As String ' The name of the symbol.
 
     ''' <summary>
