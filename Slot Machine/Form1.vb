@@ -4,10 +4,10 @@ Imports System.Windows.Forms.VisualStyles
 Public Class Form1
     Const intMAXREELS As Integer = 2
     Dim TimesButtonPressed As Integer = 0
-    Dim Reels As Reel()
+    Dim Reels As List(Of Reel)
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Reels = New Reel(intMAXREELS) {
+        Reels = New List(Of Reel) From {
             New Reel(RichTextBox1),
             New Reel(RichTextBox2),
             New Reel(RichTextBox3)
