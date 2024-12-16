@@ -27,6 +27,9 @@ Partial Class Form1
         RichTextBox2 = New RichTextBox()
         RichTextBox3 = New RichTextBox()
         GroupBox1 = New GroupBox()
+        MenuStrip1 = New MenuStrip()
+        ToolStrp_Settings = New ToolStripMenuItem()
+        MenuStrip1.SuspendLayout()
         SuspendLayout()
         ' 
         ' btn_SpinSlotMachine
@@ -80,6 +83,21 @@ Partial Class Form1
         GroupBox1.TabStop = False
         GroupBox1.Text = "Slot Machine Reels"
         ' 
+        ' MenuStrip1
+        ' 
+        MenuStrip1.Items.AddRange(New ToolStripItem() {ToolStrp_Settings})
+        MenuStrip1.Location = New Point(0, 0)
+        MenuStrip1.Name = "MenuStrip1"
+        MenuStrip1.Size = New Size(1014, 24)
+        MenuStrip1.TabIndex = 8
+        MenuStrip1.Text = "MenuStrip1"
+        ' 
+        ' ToolStrp_Settings
+        ' 
+        ToolStrp_Settings.Name = "ToolStrp_Settings"
+        ToolStrp_Settings.Size = New Size(61, 20)
+        ToolStrp_Settings.Text = "Settings"
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -90,14 +108,21 @@ Partial Class Form1
         Controls.Add(RichTextBox1)
         Controls.Add(btn_SpinSlotMachine)
         Controls.Add(GroupBox1)
+        Controls.Add(MenuStrip1)
+        MainMenuStrip = MenuStrip1
         Name = "Form1"
         Text = "Slot Machine!"
+        MenuStrip1.ResumeLayout(False)
+        MenuStrip1.PerformLayout()
         ResumeLayout(False)
+        PerformLayout()
     End Sub
     Friend WithEvents btn_SpinSlotMachine As Button
     Friend WithEvents RichTextBox1 As RichTextBox
     Friend WithEvents RichTextBox2 As RichTextBox
     Friend WithEvents RichTextBox3 As RichTextBox
     Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents MenuStrip1 As MenuStrip
+    Friend WithEvents ToolStrp_Settings As ToolStripMenuItem
 
 End Class

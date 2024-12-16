@@ -1,10 +1,12 @@
 ﻿Imports System.Threading
 Imports System.Windows.Forms.VisualStyles
+Imports Slot_Machine.Settings
 
 Public Class Form1
     ' The maximum number of reels in the slot machine.
     Dim MaxReels As Integer
-
+    Shared SettingsForm As Form = New Settings
+    Public IconSettings As UseNameOrIcon = UseNameOrIcon.UseIcon
     ' The number of times the spin button has been pressed.
     Dim TimesButtonPressed As Integer = 0
 
@@ -79,11 +81,11 @@ Public Class Form1
         Dim ThirdReelSymbol As ReelSymbol = Reels(2).SelectedSymbol
 
         ' Check for matching symbols and return the corresponding prize.
-        If FirstReelSymbol.Name = SecondReelSymbol.Name AndAlso FirstReelSymbol.Name = ThirdReelSymbol.Name Then
+        If FirstReelSymbol.SymbolDisplay = SecondReelSymbol.SymbolDisplay AndAlso FirstReelSymbol.SymbolDisplay = ThirdReelSymbol.SymbolDisplay Then
             Return FirstReelSymbol.WinningSymbolNumbers(2)
-        ElseIf FirstReelSymbol.Name = SecondReelSymbol.Name OrElse FirstReelSymbol.Name = ThirdReelSymbol.Name Then
+        ElseIf FirstReelSymbol.SymbolDisplay = SecondReelSymbol.SymbolDisplay OrElse FirstReelSymbol.SymbolDisplay = ThirdReelSymbol.SymbolDisplay Then
             Return FirstReelSymbol.WinningSymbolNumbers(1)
-        ElseIf SecondReelSymbol.Name = ThirdReelSymbol.Name Then
+        ElseIf SecondReelSymbol.SymbolDisplay = ThirdReelSymbol.SymbolDisplay Then
             Return SecondReelSymbol.WinningSymbolNumbers(1)
         End If
 
@@ -91,6 +93,9 @@ Public Class Form1
         Return 0
     End Function
 
+    Private Sub ToolStrp_Settings_Click(sender As Object, e As EventArgs) Handles ToolStrp_Settings.Click
+        Settings.Show()
+    End Sub
 End Class
 
 
@@ -222,7 +227,8 @@ Class Reel
         While IsReelAnimated
             Dim randomSymbol = ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE)
             SelectedSymbol = randomSymbol ' Update SelectedSymbol
-            UpdateTextbox(randomSymbol.Name) ' Update the textbox
+            SelectedSymbol.CheckSettings()
+            UpdateTextbox(randomSymbol.SymbolDisplay) ' Update the textbox
             Await Task.Delay(10)
         End While
     End Sub
@@ -237,7 +243,7 @@ Class Reel
         For delay As Integer = 10 To 100 Step 5 ' Gradually increase delay from 10 to 100 ms.
             Dim randomSymbol = ConvertDigitalReelToPhysical(randomGenerator.Next(intLOWERBOUND, intUPPERBOUND) Mod intDIVISONVALUE)
             SelectedSymbol = randomSymbol ' Update the SelectedSymbol to match the displayed symbol
-            UpdateTextbox(randomSymbol.Name) ' Update the Textbox with the same symbol
+            UpdateTextbox(randomSymbol.SymbolDisplay) ' Update the Textbox with the same symbol
             Await Task.Delay(delay) ' Wait for the increasing delay time before updating again
         Next
     End Function
@@ -253,7 +259,7 @@ Class Reel
             ' Get the final symbol by calculating the digital reel and converting it to physical.
             Dim finalSymbol = ConvertDigitalReelToPhysical(CalculateDigitalReel())
             SelectedSymbol = finalSymbol ' Store the selected symbol.
-            UpdateTextbox(finalSymbol.Name) ' Update the Textbox with the final symbol.
+            UpdateTextbox(finalSymbol.SymbolDisplay) ' Update the Textbox with the final symbol.
         End SyncLock
     End Sub
 
@@ -270,44 +276,56 @@ End Class
 ' Class ReelSymbol represents a single symbol on the reel.
 Public Class ReelSymbol
     Public WinningSymbolNumbers As Integer() ' The numbers associated with winning symbols.
-    Public Name As String ' The name of the symbol.
+    Public SymbolDisplay As String ' The name of the symbol.
 
+    Private Icon As String
+    Private Intial As String
     ''' <summary>
     ''' Constructor for a ReelSymbol.
     ''' </summary>
     ''' <param name="WinningSymbol">Array of numbers representing winning symbol numbers.</param>
     ''' <param name="Name">Name of the symbol.</param>
-    Public Sub New(WinningSymbol As Integer(), Name As String)
+    Public Sub New(WinningSymbol As Integer(), Icon As String, Intial As String)
         Me.WinningSymbolNumbers = WinningSymbol
-        Me.Name = Name
+        Me.Icon = Icon
+        Me.Intial = Intial
+    End Sub
+
+    Public Sub CheckSettings()
+        Select Case Form1.IconSettings
+            Case Settings.UseNameOrIcon.UseIcon
+                SymbolDisplay = Icon
+            Case Settings.UseNameOrIcon.UseName
+                SymbolDisplay = Intial
+        End Select
     End Sub
 End Class
 
 Public Class ReelSymbolFactory
     Public Shared Function CreateSymbols() As List(Of ReelSymbol)
         Return New List(Of ReelSymbol) From {
-            New ReelSymbol({0, 0, 25}, "🂩"),
-            New ReelSymbol({0, 0, 25}, "🂩"),
-            New ReelSymbol({0, 0, 25}, "🂩"),
-            New ReelSymbol({0, 25, 100}, "🂪"),
-            New ReelSymbol({0, 25, 100}, "🂪"),
-            New ReelSymbol({0, 25, 100}, "🂪"),
-            New ReelSymbol({0, 50, 100}, "🂫"),
-            New ReelSymbol({0, 50, 100}, "🂫"),
-            New ReelSymbol({0, 50, 100}, "🂫"),
-            New ReelSymbol({0, 50, 125}, "🂭"),
-            New ReelSymbol({0, 50, 125}, "🂭"),
-            New ReelSymbol({0, 50, 250}, "🂮"),
-            New ReelSymbol({0, 75, 250}, "🂡"),
-            New ReelSymbol({0, 75, 250}, "🌸"),
-            New ReelSymbol({0, 75, 250}, "🌸"),
-            New ReelSymbol({0, 75, 250}, "🌸"),
-            New ReelSymbol({0, 50, 400}, "🍋"),
-            New ReelSymbol({0, 50, 400}, "🍋"),
-            New ReelSymbol({0, 50, 400}, "🍋"),
-            New ReelSymbol({0, 100, 400}, "🍉"),
-            New ReelSymbol({0, 100, 750}, "⍾"),
-            New ReelSymbol({0, 2000, 9000}, "💰")
+            New ReelSymbol({0, 0, 25}, "🂩", "9"),
+            New ReelSymbol({0, 0, 25}, "🂩", "9"),
+            New ReelSymbol({0, 0, 25}, "🂩", "9"),
+            New ReelSymbol({0, 25, 100}, "🂪", "10"),
+            New ReelSymbol({0, 25, 100}, "🂪", "10"),
+            New ReelSymbol({0, 25, 100}, "🂪", "10"),
+            New ReelSymbol({0, 50, 100}, "🂫", "J"),
+            New ReelSymbol({0, 50, 100}, "🂫", "J"),
+            New ReelSymbol({0, 50, 100}, "🂫", "J"),
+            New ReelSymbol({0, 50, 125}, "🂭", "Q"),
+            New ReelSymbol({0, 50, 125}, "🂭", "Q"),
+            New ReelSymbol({0, 50, 250}, "🂮", "K"),
+            New ReelSymbol({0, 75, 250}, "🂡", "A"),
+            New ReelSymbol({0, 75, 250}, "🌸", "C"),
+            New ReelSymbol({0, 75, 250}, "🌸", "C"),
+            New ReelSymbol({0, 75, 250}, "🌸", "C"),
+            New ReelSymbol({0, 50, 400}, "🍋", "L"),
+            New ReelSymbol({0, 50, 400}, "🍋", "L"),
+            New ReelSymbol({0, 50, 400}, "🍋", "L"),
+            New ReelSymbol({0, 100, 400}, "🍉", "W"),
+            New ReelSymbol({0, 100, 750}, "⍾", "B"),
+            New ReelSymbol({0, 2000, 9000}, "💰", "M")
         }
     End Function
 
